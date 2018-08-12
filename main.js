@@ -12,6 +12,18 @@
         var res = `# ${title}\n`;
         for (var i = 0; i < texts.length; i++) {
             var text = texts[i];
+
+            // GitHubでレイアウトが崩れないように、箇条書き行間の空行を削除
+            if (
+                i > 0 &&
+                i < texts.length - 1 &&
+                matchEmptyLine(text) &&
+                matchLiLine(texts[i - 1]) &&
+                matchLiLine(texts[i + 1])
+            ) {
+                continue;
+            }
+
             res += '\n' + text;
         }
 
@@ -32,6 +44,14 @@
         str = str.replace(/'/g, '&#39;');
         return str;
     };
+
+    var matchEmptyLine = (text) => {
+        return text.search(/^\s*$/) > -1;
+    }
+
+    var matchLiLine = (text) => {
+        return text.search(/^ *- /) > -1;
+    }
 
     var markdownIndent = (level=0) => {
         var indent = '';
